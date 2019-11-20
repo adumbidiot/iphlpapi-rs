@@ -1,7 +1,12 @@
 use crate::ip_addr_string::IpAddrString;
-use iphlpapi_sys::{IP_ADAPTER_INFO, IP_ADDR_STRING};
-use std::convert::TryInto;
-use std::ffi::CStr;
+use iphlpapi_sys::{
+    IP_ADAPTER_INFO,
+    IP_ADDR_STRING,
+};
+use std::{
+    convert::TryInto,
+    ffi::CStr,
+};
 
 #[repr(transparent)]
 pub struct IpAdapterInfo(IP_ADAPTER_INFO);

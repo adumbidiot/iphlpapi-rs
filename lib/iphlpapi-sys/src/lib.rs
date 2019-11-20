@@ -2,14 +2,23 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 use libc::time_t;
-use winapi::shared::minwindef::BOOL;
-use winapi::shared::minwindef::BYTE;
-use winapi::shared::minwindef::DWORD;
-use winapi::shared::minwindef::UINT;
-use winapi::shared::ntdef::CHAR;
-use winapi::shared::ntdef::PULONG;
-use winapi::shared::ntdef::ULONG;
-use winapi::STRUCT;
+use winapi::{
+    shared::{
+        minwindef::{
+            BOOL,
+            BYTE,
+            DWORD,
+            UINT,
+        },
+        ntdef::{
+            CHAR,
+            PULONG,
+            ULONG,
+        },
+    },
+    um::winnt::PVOID,
+    STRUCT,
+};
 
 pub const MAX_ADAPTER_DESCRIPTION_LENGTH: usize = 128;
 pub const MAX_ADAPTER_NAME_LENGTH: usize = 256;
@@ -56,6 +65,9 @@ STRUCT! {
 }
 pub type IP_MASK_STRING = IP_ADDRESS_STRING;
 
+pub type IPAddr = ULONG;
+
 extern "system" {
     pub fn GetAdaptersInfo(AdapterInfo: PIP_ADAPTER_INFO, SizePointer: PULONG) -> ULONG;
+    pub fn SendARP(DestIP: IPAddr, SrcIP: IPAddr, pMacAddr: PVOID, PhyAddrLen: PULONG) -> DWORD;
 }
