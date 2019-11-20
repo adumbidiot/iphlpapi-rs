@@ -4,10 +4,9 @@ pub mod ip_addr_string;
 pub use crate::ip_adapter_info::IpAdapterInfo;
 use crate::ip_adapter_info::IpAdapterInfoIter;
 pub use crate::ip_addr_string::IpAddrString;
-use iphlpapi_sys::{
-    GetAdaptersInfo, ERROR_BUFFER_OVERFLOW, ERROR_SUCCESS, _IP_ADAPTER_INFO as IP_ADAPTER_INFO,
-};
+use iphlpapi_sys::{GetAdaptersInfo, IP_ADAPTER_INFO};
 use std::{convert::TryInto, io::Error as IoError, mem::size_of};
+use winapi::shared::winerror::{ERROR_BUFFER_OVERFLOW, ERROR_SUCCESS};
 
 pub fn get_adapters_info() -> Result<IpAdapterInfoList, IoError> {
     let mut len = 0;

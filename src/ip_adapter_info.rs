@@ -1,5 +1,5 @@
 use crate::ip_addr_string::IpAddrString;
-use iphlpapi_sys::{IP_ADDR_STRING, _IP_ADAPTER_INFO as IP_ADAPTER_INFO};
+use iphlpapi_sys::{IP_ADAPTER_INFO, IP_ADDR_STRING};
 use std::convert::TryInto;
 use std::ffi::CStr;
 

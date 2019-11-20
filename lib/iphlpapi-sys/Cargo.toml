@@ -5,6 +5,5 @@ authors = ["adumbidiot <nathaniel.daniel23@outlook.com>"]
 edition = "2018"
 
 [dependencies]
-
-[build-dependencies]
-bindgen = "0.51.1"
+winapi = "0.3.8"
+libc = "0.2.65"
