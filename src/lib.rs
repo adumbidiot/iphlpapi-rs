@@ -31,14 +31,14 @@ use winapi::shared::{
     },
 };
 
-pub fn get_adapters_info() -> Result<IpAdapterInfoList, IoError> {
+pub fn get_adapters_info() -> Result<Vec<IpAdapterInfo>, IoError> {
     let mut len = 0;
     let return_code = unsafe { GetAdaptersInfo(std::ptr::null_mut(), &mut len) };
 
     match return_code {
         ERROR_BUFFER_OVERFLOW => (),
         ERROR_SUCCESS => {
-            return Ok(IpAdapterInfoList { inner: Vec::new() });
+            return Ok(Vec::new());
         }
         _ => {
             return Err(IoError::from_raw_os_error(return_code.try_into().unwrap()));
@@ -52,17 +52,17 @@ pub fn get_adapters_info() -> Result<IpAdapterInfoList, IoError> {
         "Invalid Requested Buffer Size"
     );
 
-    let mut adapters: Vec<IpAdapterInfo> =
-        Vec::with_capacity(len_usize / size_of::<IpAdapterInfo>());
+    let num_adapters = len_usize / size_of::<IpAdapterInfo>();
+    let mut adapters: Vec<IpAdapterInfo> = Vec::with_capacity(num_adapters);
     let return_code =
         unsafe { GetAdaptersInfo(adapters.as_mut_ptr() as *mut IP_ADAPTER_INFO, &mut len) };
 
     match return_code {
         ERROR_SUCCESS => {
             unsafe {
-                adapters.set_len(len.try_into().unwrap());
+                adapters.set_len(num_adapters);
             }
-            Ok(IpAdapterInfoList { inner: adapters })
+            Ok(adapters)
         }
         _ => Err(IoError::from_raw_os_error(return_code.try_into().unwrap())),
     }
@@ -85,21 +85,5 @@ pub fn send_arp(dest_ip: Ipv4Addr, src_ip: Option<Ipv4Addr>) -> Result<(u64, ULO
         Ok((mac_addr, mac_addr_len))
     } else {
         Err(IoError::from_raw_os_error(ret.try_into().unwrap()))
-    }
-}
-
-pub struct IpAdapterInfoList {
-    inner: Vec<IpAdapterInfo>,
-}
-
-impl IpAdapterInfoList {
-    pub fn iter(&self) -> IpAdapterInfoIter {
-        IpAdapterInfoIter::new(self.inner.get(0))
-    }
-}
-
-impl std::fmt::Debug for IpAdapterInfoList {
-    fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-        fmt.debug_list().entries(self.iter()).finish()
     }
 }
