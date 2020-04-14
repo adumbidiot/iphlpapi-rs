@@ -6,4 +6,4 @@ edition = "2018"
 
 [dependencies]
 winapi = "0.3.8"
-libc = "0.2.68"
+libc = "0.2.69"
