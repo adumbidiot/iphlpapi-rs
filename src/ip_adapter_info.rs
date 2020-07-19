@@ -1,11 +1,11 @@
 use crate::ip_addr_string::IpAddrString;
-use iphlpapi_sys::{
-    IP_ADAPTER_INFO,
-    IP_ADDR_STRING,
-};
 use std::{
     convert::TryInto,
     ffi::CStr,
+};
+use winapi::um::iptypes::{
+    IP_ADAPTER_INFO,
+    IP_ADDR_STRING,
 };
 
 #[repr(transparent)]

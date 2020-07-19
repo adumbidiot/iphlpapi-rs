@@ -5,8 +5,4 @@ authors = [ "adumbidiot <nathaniel.daniel23@outlook.com>" ]
 edition = "2018"
 
 [dependencies]
-iphlpapi-sys = { path = "./lib/iphlpapi-sys" }
-winapi = { version = "0.3.9", features = [ "winerror" ] }
-
-[workspace]
-members = [ "./lib/iphlpapi-sys" ]
+winapi = { version = "0.3.9", features = [ "iphlpapi", "winerror" ] }

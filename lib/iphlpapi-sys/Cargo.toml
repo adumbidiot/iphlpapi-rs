@@ -1,9 +1,0 @@
-[package]
-name = "iphlpapi-sys"
-version = "0.0.1"
-authors = ["adumbidiot <nathaniel.daniel23@outlook.com>"]
-edition = "2018"
-
-[dependencies]
-winapi = "0.3.9"
-libc = "0.2.68"
