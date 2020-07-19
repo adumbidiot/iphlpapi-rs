@@ -8,26 +8,30 @@ pub use crate::{
     },
     ip_addr_string::IpAddrString,
 };
-use iphlpapi_sys::{
-    GetAdaptersInfo,
-    SendARP,
-    IP_ADAPTER_INFO,
-};
 use std::{
     convert::TryInto,
     io::Error as IoError,
     mem::size_of,
     net::Ipv4Addr,
 };
-use winapi::shared::{
-    ntdef::{
-        PULONG,
-        ULONG,
+use winapi::{
+    shared::{
+        ntdef::{
+            PULONG,
+            ULONG,
+        },
+        winerror::{
+            ERROR_BUFFER_OVERFLOW,
+            ERROR_SUCCESS,
+            NO_ERROR,
+        },
     },
-    winerror::{
-        ERROR_BUFFER_OVERFLOW,
-        ERROR_SUCCESS,
-        NO_ERROR,
+    um::{
+        iphlpapi::{
+            GetAdaptersInfo,
+            SendARP,
+        },
+        iptypes::IP_ADAPTER_INFO,
     },
 };
 

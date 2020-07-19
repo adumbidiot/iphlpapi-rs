@@ -1,5 +1,5 @@
-use iphlpapi_sys::IP_ADDR_STRING;
 use std::ffi::CStr;
+use winapi::um::iptypes::IP_ADDR_STRING;
 
 #[repr(transparent)]
 pub struct IpAddrString(IP_ADDR_STRING);
