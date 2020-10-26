@@ -5,22 +5,22 @@ use winapi::um::iptypes::IP_ADDR_STRING;
 pub struct IpAddrString(IP_ADDR_STRING);
 
 impl IpAddrString {
+    /// Try to get the next `IpAddrString` in this linked list
     pub fn next(&self) -> Option<&Self> {
-        if self.0.Next.is_null() {
-            None
-        } else {
-            Some(unsafe { &*(self.0.Next as *mut Self) })
-        }
+        unsafe { self.0.Next.cast::<IpAddrString>().as_ref() }
     }
 
+    /// Get the address
     pub fn get_address(&self) -> &CStr {
         unsafe { CStr::from_ptr(self.0.IpAddress.String.as_ptr()) }
     }
 
+    /// Get the mask
     pub fn get_mask(&self) -> &CStr {
         unsafe { CStr::from_ptr(self.0.IpMask.String.as_ptr()) }
     }
 
+    /// Iter the remaining data in this linked list
     pub fn iter(&self) -> IpAddrStringIter {
         IpAddrStringIter::new(Some(self))
     }
