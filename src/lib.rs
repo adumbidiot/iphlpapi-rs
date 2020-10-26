@@ -25,6 +25,11 @@ use winapi::{
     um::iphlpapi::SendARP,
 };
 
+/// Get the adapter info for this computer.
+pub fn get_adapters_info() -> std::io::Result<IpAdapterInfoList> {
+    IpAdapterInfoList::get()
+}
+
 pub fn send_arp(dest_ip: Ipv4Addr, src_ip: Option<Ipv4Addr>) -> Result<(u64, ULONG), IoError> {
     let mut mac_addr = std::u64::MAX;
     let mut mac_addr_len: ULONG = 6;
