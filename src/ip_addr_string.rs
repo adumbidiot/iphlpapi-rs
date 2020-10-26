@@ -21,8 +21,8 @@ impl IpAddrString {
     }
 
     /// Iter the remaining data in this linked list
-    pub fn iter(&self) -> IpAddrStringIter {
-        IpAddrStringIter::new(Some(self))
+    pub fn iter(&self) -> Iter {
+        Iter::new(Some(self))
     }
 }
 
@@ -35,17 +35,17 @@ impl std::fmt::Debug for IpAddrString {
     }
 }
 
-pub struct IpAddrStringIter<'a> {
+pub struct Iter<'a> {
     ip_addr: Option<&'a IpAddrString>,
 }
 
-impl<'a> IpAddrStringIter<'a> {
+impl<'a> Iter<'a> {
     pub fn new(ip_addr: Option<&'a IpAddrString>) -> Self {
-        IpAddrStringIter { ip_addr }
+        Self { ip_addr }
     }
 }
 
-impl<'a> Iterator for IpAddrStringIter<'a> {
+impl<'a> Iterator for Iter<'a> {
     type Item = &'a IpAddrString;
     fn next(&mut self) -> Option<Self::Item> {
         let mut ret = self.ip_addr.and_then(|i| i.next());

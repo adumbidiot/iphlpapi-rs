@@ -1,6 +1,6 @@
 use crate::{
+    ip_adapter_info::Iter as IpAdapterInfoIter,
     IpAdapterInfo,
-    IpAdapterInfoIter,
 };
 use std::convert::TryInto;
 use winapi::{
@@ -83,7 +83,7 @@ impl IpAdapterInfoList {
 
     /// Iter over the stored data
     pub fn iter(&self) -> IpAdapterInfoIter {
-        unsafe { IpAdapterInfoIter::new(self.data.cast::<IpAdapterInfo>().as_ref()) }
+        IpAdapterInfoIter::new(unsafe { self.data.cast::<IpAdapterInfo>().as_ref() })
     }
 }
 

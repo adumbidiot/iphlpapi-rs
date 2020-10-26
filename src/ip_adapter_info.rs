@@ -19,8 +19,8 @@ impl IpAdapterInfo {
     }
 
     /// Iterate over the remaining data in this linked list
-    pub fn iter(&self) -> IpAdapterInfoIter {
-        IpAdapterInfoIter::new(Some(self))
+    pub fn iter(&self) -> Iter {
+        Iter::new(Some(self))
     }
 
     /// Get the combo index.
@@ -66,17 +66,17 @@ impl std::fmt::Debug for IpAdapterInfo {
     }
 }
 
-pub struct IpAdapterInfoIter<'a> {
+pub struct Iter<'a> {
     adapter: Option<&'a IpAdapterInfo>,
 }
 
-impl<'a> IpAdapterInfoIter<'a> {
+impl<'a> Iter<'a> {
     pub fn new(adapter: Option<&'a IpAdapterInfo>) -> Self {
-        IpAdapterInfoIter { adapter }
+        Self { adapter }
     }
 }
 
-impl<'a> Iterator for IpAdapterInfoIter<'a> {
+impl<'a> Iterator for Iter<'a> {
     type Item = &'a IpAdapterInfo;
     fn next(&mut self) -> Option<Self::Item> {
         let mut ret = self.adapter.and_then(|a| a.next());

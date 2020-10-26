@@ -2,7 +2,6 @@ pub mod ip_adapter_info;
 pub mod ip_adapter_info_list;
 pub mod ip_addr_string;
 
-use crate::ip_adapter_info::IpAdapterInfoIter;
 pub use crate::{
     ip_adapter_info::IpAdapterInfo,
     ip_adapter_info_list::IpAdapterInfoList,
