@@ -33,6 +33,17 @@ impl IpAdapterInfoList {
         }
     }
 
+    /// Create an uninitalized IpAdapterInfoList that can hold `size` bytes.
+    fn alloc(size: usize) -> Option<Self> {
+        let data = unsafe { HeapAlloc(GetProcessHeap(), 0, size) };
+
+        if data.is_null() {
+            return None;
+        }
+
+        Some(Self { data })
+    }
+
     /// Try to fetch the `IpAdapterInfoList` for this computer.
     pub fn get() -> Result<Self, std::io::Error> {
         let mut len = 0;
@@ -51,14 +62,14 @@ impl IpAdapterInfoList {
         }
 
         let (data, return_code) = unsafe {
-            let data = HeapAlloc(GetProcessHeap(), 0, len.try_into().unwrap());
-            let return_code = GetAdaptersInfo(data.cast(), &mut len);
+            let data = Self::alloc(len.try_into().unwrap()).expect("Valid IpAdapterInfoList alloc");
+            let return_code = GetAdaptersInfo(data.data.cast(), &mut len);
 
             (data, return_code)
         };
 
         match return_code {
-            ERROR_SUCCESS => Ok(Self { data }),
+            ERROR_SUCCESS => Ok(data),
             _ => Err(std::io::Error::from_raw_os_error(
                 return_code.try_into().unwrap(),
             )),
