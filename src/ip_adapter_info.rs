@@ -20,10 +20,7 @@ use winapi::{
         minwindef::DWORD,
         ntdef::TRUE,
     },
-    um::iptypes::{
-        IP_ADAPTER_INFO,
-        IP_ADDR_STRING,
-    },
+    um::iptypes::IP_ADAPTER_INFO,
 };
 
 /// The kind of adapter
@@ -114,18 +111,32 @@ impl IpAdapterInfo {
     }
 
     /// Check if dhcp is enabled for this adapter
-    pub fn dhcp_enabled(&self) -> bool {
+    pub fn get_dhcp_enabled(&self) -> bool {
         self.0.DhcpEnabled == TRUE.into()
+    }
+
+    /// Reserved.
+    pub fn get_current_ip_address(&self) -> Option<&IpAddrString> {
+        Some(unsafe { self.0.CurrentIpAddress.as_ref()?.into() })
     }
 
     /// A linked list of ip addresses associated with this adapter
     pub fn get_ip_address_list(&self) -> &IpAddrString {
-        unsafe { &*(&self.0.IpAddressList as *const IP_ADDR_STRING as *const IpAddrString) }
+        (&self.0.IpAddressList).into()
     }
 
     /// A linked list of gateways associated with this adapter
     pub fn get_gateway_list(&self) -> &IpAddrString {
-        unsafe { &*(&self.0.GatewayList as *const IP_ADDR_STRING as *const IpAddrString) }
+        (&self.0.GatewayList).into()
+    }
+
+    /// Get the addr of the dhcp server.
+    pub fn get_dhcp_server(&self) -> Option<&IpAddrString> {
+        if !self.get_dhcp_enabled() {
+            return None;
+        }
+
+        Some((&self.0.DhcpServer).into())
     }
 }
 
@@ -138,9 +149,11 @@ impl std::fmt::Debug for IpAdapterInfo {
             .field("address", &self.get_address())
             .field("index", &self.get_index())
             .field("kind", &self.get_kind())
-            .field("dhcp_enabled", &self.dhcp_enabled())
+            .field("dhcp_enabled", &self.get_dhcp_enabled())
+            .field("current_ip_address", &self.get_current_ip_address())
             .field("ip_address_list", &self.get_ip_address_list())
             .field("gateway_list", &self.get_gateway_list())
+            .field("dhcp_server", &self.get_dhcp_server())
             .finish()
     }
 }

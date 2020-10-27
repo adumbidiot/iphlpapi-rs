@@ -26,6 +26,20 @@ impl IpAddrString {
     }
 }
 
+impl From<IP_ADDR_STRING> for IpAddrString {
+    fn from(ip_addr: IP_ADDR_STRING) -> Self {
+        Self(ip_addr)
+    }
+}
+
+impl<'a> From<&'a IP_ADDR_STRING> for &'a IpAddrString {
+    fn from(ip_addr: &'a IP_ADDR_STRING) -> &'a IpAddrString {
+        // # Safety
+        // This is safe since the high level wrapper has the same memory layout as the struct it wraps.
+        unsafe { &*(ip_addr as *const IP_ADDR_STRING as *const IpAddrString) }
+    }
+}
+
 impl std::fmt::Debug for IpAddrString {
     fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
         fmt.debug_struct("IpAddrString")
