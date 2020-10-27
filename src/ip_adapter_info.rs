@@ -17,8 +17,10 @@ use winapi::{
             MIB_IF_TYPE_PPP,
             MIB_IF_TYPE_SLIP,
         },
-        minwindef::DWORD,
-        ntdef::TRUE,
+        minwindef::{
+            DWORD,
+            TRUE,
+        },
     },
     um::iptypes::IP_ADAPTER_INFO,
 };
@@ -112,7 +114,9 @@ impl IpAdapterInfo {
 
     /// Check if dhcp is enabled for this adapter
     pub fn get_dhcp_enabled(&self) -> bool {
-        self.0.DhcpEnabled == TRUE.into()
+        // docs say "An option value".
+        // What does that MEAN? non-zero?
+        self.0.DhcpEnabled != 0
     }
 
     /// Reserved.
@@ -138,6 +142,28 @@ impl IpAdapterInfo {
 
         Some((&self.0.DhcpServer).into())
     }
+
+    /// Checks whether WINS is enabled
+    pub fn get_have_wins(&self) -> bool {
+        self.0.HaveWins == TRUE
+    }
+
+    /// Get the primary wins server.
+    pub fn get_primary_wins_server(&self) -> Option<&IpAddrString> {
+        if !self.get_have_wins() {
+            return None;
+        }
+
+        Some((&self.0.PrimaryWinsServer).into())
+    }
+    /// Get the secondary wins server.
+    pub fn get_secondary_wins_server(&self) -> Option<&IpAddrString> {
+        if !self.get_have_wins() {
+            return None;
+        }
+
+        Some((&self.0.SecondaryWinsServer).into())
+    }
 }
 
 impl std::fmt::Debug for IpAdapterInfo {
@@ -154,6 +180,9 @@ impl std::fmt::Debug for IpAdapterInfo {
             .field("ip_address_list", &self.get_ip_address_list())
             .field("gateway_list", &self.get_gateway_list())
             .field("dhcp_server", &self.get_dhcp_server())
+            .field("have_wins", &self.get_have_wins())
+            .field("primary_wins_server", &self.get_primary_wins_server())
+            .field("secondary_wins_server", &self.get_primary_wins_server())
             .finish()
     }
 }
