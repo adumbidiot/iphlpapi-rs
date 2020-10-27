@@ -5,6 +5,10 @@ use std::{
         TryInto,
     },
     ffi::CStr,
+    time::{
+        Duration,
+        SystemTime,
+    },
 };
 use winapi::{
     shared::{
@@ -22,6 +26,7 @@ use winapi::{
             TRUE,
         },
     },
+    ucrt::corecrt::time_t,
     um::iptypes::IP_ADAPTER_INFO,
 };
 
@@ -65,6 +70,16 @@ impl TryFrom<DWORD> for AdaperKind {
             _ => Err(n),
         }
     }
+}
+
+fn time_to_system_time(time: time_t) -> Option<SystemTime> {
+    if time == -1 {
+        return None;
+    }
+
+    let time = time.try_into().ok()?;
+
+    SystemTime::UNIX_EPOCH.checked_add(Duration::from_secs(time))
 }
 
 /// Data about a network adapter
@@ -114,8 +129,9 @@ impl IpAdapterInfo {
 
     /// Check if dhcp is enabled for this adapter
     pub fn get_dhcp_enabled(&self) -> bool {
-        // docs say "An option value".
-        // What does that MEAN? non-zero?
+        // Docs say "An option value".
+        // What does that MEAN?
+        // Only checks for non-zero in docs?
         self.0.DhcpEnabled != 0
     }
 
@@ -156,6 +172,7 @@ impl IpAdapterInfo {
 
         Some((&self.0.PrimaryWinsServer).into())
     }
+
     /// Get the secondary wins server.
     pub fn get_secondary_wins_server(&self) -> Option<&IpAddrString> {
         if !self.get_have_wins() {
@@ -163,6 +180,24 @@ impl IpAdapterInfo {
         }
 
         Some((&self.0.SecondaryWinsServer).into())
+    }
+
+    /// Get the time the DHCP lease was obtained.
+    pub fn get_lease_obtained(&self) -> Option<SystemTime> {
+        if !self.get_dhcp_enabled() {
+            return None;
+        }
+
+        time_to_system_time(self.0.LeaseObtained)
+    }
+
+    /// Get the time the DHCP lease expires.
+    pub fn get_lease_expires(&self) -> Option<SystemTime> {
+        if !self.get_dhcp_enabled() {
+            return None;
+        }
+
+        time_to_system_time(self.0.LeaseExpires)
     }
 }
 
@@ -183,6 +218,8 @@ impl std::fmt::Debug for IpAdapterInfo {
             .field("have_wins", &self.get_have_wins())
             .field("primary_wins_server", &self.get_primary_wins_server())
             .field("secondary_wins_server", &self.get_primary_wins_server())
+            .field("lease_obtained", &self.get_lease_obtained())
+            .field("lease_expires", &self.get_lease_expires())
             .finish()
     }
 }
