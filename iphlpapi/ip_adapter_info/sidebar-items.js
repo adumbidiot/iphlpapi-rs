@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["AdaperKind","The kind of adapter"]],"struct":[["IpAdapterInfo","Data about a network adapter"],["Iter",""]]});

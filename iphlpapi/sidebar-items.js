@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["get_adapters_info","Get the adapter info for this computer."],["send_arp",""]],"mod":[["ip_adapter_info",""],["ip_adapter_info_list",""],["ip_addr_string",""]]});

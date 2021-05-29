@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["IpAdapterInfoList","A Linked List of `IpAdapterInfo`s."]]});
