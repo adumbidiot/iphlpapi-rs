@@ -43,13 +43,13 @@ pub enum AdaperKind {
     TokenRing,
 
     /// A PPP network interface.
-    PPP,
+    Ppp,
 
     /// A software loopback network interface.
     Loopback,
 
     /// An ATM network interface.
-    ATM,
+    Atm,
 
     /// An IEEE 802.11 wireless network interface.
     IEEE80211,
@@ -63,9 +63,9 @@ impl TryFrom<DWORD> for AdaperKind {
             MIB_IF_TYPE_OTHER => Ok(AdaperKind::Other),
             MIB_IF_TYPE_ETHERNET => Ok(AdaperKind::Ethernet),
             IF_TYPE_ISO88025_TOKENRING => Ok(AdaperKind::TokenRing),
-            MIB_IF_TYPE_PPP => Ok(AdaperKind::PPP),
+            MIB_IF_TYPE_PPP => Ok(AdaperKind::Ppp),
             MIB_IF_TYPE_LOOPBACK => Ok(AdaperKind::Loopback),
-            MIB_IF_TYPE_SLIP => Ok(AdaperKind::ATM),
+            MIB_IF_TYPE_SLIP => Ok(AdaperKind::Atm),
             IF_TYPE_IEEE80211 => Ok(AdaperKind::IEEE80211),
             _ => Err(n),
         }
